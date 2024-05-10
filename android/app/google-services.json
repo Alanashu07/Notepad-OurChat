@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "902266941933",
+    "project_id": "ourchatnotification",
+    "storage_bucket": "ourchatnotification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902266941933:android:240b50565590ad38be77e4",
+        "android_client_info": {
+          "package_name": "com.notepad.notepad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2mPioZX4OHqqTvllBOrzX4ECIndXQnoc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
