@@ -6,6 +6,7 @@ import 'package:notepad/Screens/ChatApp/TabBarScreens/status_screen.dart';
 import 'package:notepad/Screens/ChatApp/profile_screen.dart';
 import 'package:notepad/Services/user_services.dart';
 import 'package:notepad/Widgets/profile_image.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../Models/user_model.dart';
@@ -82,8 +83,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
                 onTap: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (_) => ProfileScreen(user: user!)));
+                      PageTransition(child: ProfileScreen(user: user!), type: PageTransitionType.topToBottom));
                 },
                 child: ProfileImage(
                   online: true,
@@ -150,7 +150,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> {
           children: [
             ChatsScreen(),
             StatusScreen(),
-            CallsScreen(),
+            CallsScreen(user: user!,),
           ],
         ),
       ),

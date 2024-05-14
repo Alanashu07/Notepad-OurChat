@@ -16,7 +16,7 @@ class ProfileImage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(26),
-            child: Image.network(imageUrl, fit: BoxFit.fill,),
+            child: Image.network(imageUrl, fit: BoxFit.cover,),
           ),
           Align(
             alignment: Alignment.topRight,

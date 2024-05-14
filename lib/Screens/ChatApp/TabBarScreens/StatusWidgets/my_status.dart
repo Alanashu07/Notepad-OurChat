@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:notepad/Screens/ChatApp/TabBarScreens/StatusWidgets/view_total_statuses.dart';
 import 'package:notepad/Widgets/status_painter.dart';
+import 'package:page_transition/page_transition.dart';
 import '../../../../Models/user_model.dart';
 import '../../../../Styles/app_style.dart';
 import '../my status_view_screen.dart';
@@ -34,17 +36,18 @@ class _MyStatusState extends State<MyStatus> {
                     child: Icon(Icons.add, size: 15, color: Colors.white,)))
           ],
         ),
-        title: Text("My Status", style: TextStyle(fontWeight: FontWeight.bold),),
-        subtitle: Text("Click to add Status update", style: TextStyle(fontSize: 12),),
+        title: Text("My Status", style: TextStyle(fontWeight: FontWeight.bold, color: isLightTheme(context) ? Colors.black : Colors.white),),
+        subtitle: Text("Click to add Status update", style: TextStyle(fontSize: 12, color: isLightTheme(context) ? Colors.black54 : Colors.white60),),
       ),
     ); else
       {
-        final status = widget.user.status[0];
+        int max = widget.user.status.length -1;
+        final status = widget.user.status[max];
         final url = status['url'].toString();
         final time = status['time'];
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_)=> MyStatusViewScreen(url: url, user: widget.user)));
+        Navigator.push(context, PageTransition(child: MyStatusViewScreen(url: url, user: widget.user), type: PageTransitionType.fade));
       },
       child: ListTile(
         leading: CustomPaint(
@@ -53,8 +56,11 @@ class _MyStatusState extends State<MyStatus> {
             radius: 27,
             backgroundImage: NetworkImage(url.toString()), backgroundColor: Colors.white,),
         ),
-        title: Text("My Status", style: TextStyle(fontWeight: FontWeight.bold),),
-        subtitle: Text("Tap to see your status updates", style: TextStyle(fontSize: 12),),
+        title: Text("My Status", style: TextStyle(fontWeight: FontWeight.bold, color: isLightTheme(context) ? Colors.black : Colors.white),),
+        subtitle: Text("Tap to see your status updates", style: TextStyle(fontSize: 12, color: isLightTheme(context) ? Colors.black54 : Colors.white60),),
+        trailing: IconButton(onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (_)=> ViewTotalStatuses(user: widget.user,)));
+        }, icon: Icon(Icons.more_vert, color: isLightTheme(context) ? Colors.black : Colors.white,)),
       ),
     );
   }}

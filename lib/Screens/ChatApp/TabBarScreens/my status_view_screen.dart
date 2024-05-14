@@ -27,23 +27,24 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
 
   fetchUsers() async {
     users = await userService.fetchAllUsers(context);
-    setState(() {});
+    Set<String> uniqueIds = Set<String>();
+    for(int i = 0; i<widget.user.status.length; i++) {
+      for(int j = 0; j<widget.user.status[i]['users'].length; j++){
+        var userId = widget.user.status[i]['users'][j];
+        uniqueIds.add(userId);
+      }
+    }
+    viewedUsers = users.where((user) => uniqueIds.contains(user.id)).toList();
   }
 
   @override
   void initState() {
-    fetchUsers();
     super.initState();
+    fetchUsers();
   }
 
   @override
   Widget build(BuildContext context) {
-    for(int i = 0; i<widget.user.status.length; i++) {
-      for(int j = 0; j<widget.user.status[i]['users'].length; j++){
-        viewedUsers.add(users.where((user) => user.id == widget.user.status[i]['users'][j]).toList()[j]);
-      }
-    }
-
     MessageServices messageServices = MessageServices();
     final _controller = StoryController();
     final List<StoryItem> storyItems = [];
@@ -57,11 +58,6 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
             widget.user.status[i]['url'].toString(),
             controller: _controller));
       }
-      messageServices.viewStatus(
-          context: context,
-          user: Provider.of<UserProvider>(context).user,
-          statusUser: widget.user,
-          num: i);
     }
     return StoryView(
       storyItems: storyItems,
@@ -70,21 +66,10 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
       repeat: false,
       onComplete: () => Navigator.pop(context),
       onVerticalSwipeComplete: (verticalSwipeDirection) {
+        _controller.pause();
         showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              // return Container(
-              //   color: Colors.white,
-              //   child: ListView.builder(
-              //       itemCount: viewedUsers.length,
-              //       itemBuilder: (context, index) {
-              //     return ListTile(
-              //       leading: CircleAvatar(backgroundImage: NetworkImage(viewedUsers[index].image),),
-              //       title: Text(viewedUsers[index].name),
-              //     );
-              //   }),
-              // );
-
               return GestureDetector(
                 onTap: () {
                   FocusScopeNode currentFocus =
@@ -122,9 +107,9 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
                               ),
                               Text(
                                 viewedUsers.length.toString(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 20,
-                                    color: Colors.black54),
+                                    color: isLightTheme(context) ? Colors.black54 : Colors.white70),
                               )
                             ],
                           ),
@@ -139,8 +124,8 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      const Divider(
-                        color: Colors.black,
+                      Divider(
+                        color: isLightTheme(context) ? Colors.black : Colors.white,
                         thickness: 1,
                       ),
                       Expanded(child: ListView.builder(
@@ -162,8 +147,8 @@ class _MyStatusViewScreenState extends State<MyStatusViewScreen> {
                                           .rectangle),
                                   child: ListTile(
                                     leading: CircleAvatar(backgroundImage: NetworkImage(viewedUsers[index].image),),
-                                    title: Text(viewedUsers[index].name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                                    subtitle: Text(viewedUsers[index].email),
+                                    title: Text(viewedUsers[index].name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isLightTheme(context) ? Colors.black : Colors.white),),
+                                    subtitle: Text(viewedUsers[index].email, style: TextStyle(color: isLightTheme(context) ? Colors.black54 : Colors.white70),),
                                     trailing: IconButton(onPressed: (){
                                       Navigator.push(context, MaterialPageRoute(builder: (_)=> ChattingScreen(chatUser: viewedUsers[index], user: Provider.of<UserProvider>(context).user)));
                                     }, icon: Icon(CupertinoIcons.chat_bubble),),

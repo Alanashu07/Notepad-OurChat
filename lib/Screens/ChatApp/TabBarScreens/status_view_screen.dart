@@ -67,6 +67,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
       repeat: false,
       onComplete: () => Navigator.pop(context),
       onVerticalSwipeComplete: (verticalSwipeDirection) {
+        _controller.pause();
         showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {

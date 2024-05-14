@@ -17,7 +17,7 @@ class ChatLockScreen extends StatefulWidget {
 
 class _ChatLockScreenState extends State<ChatLockScreen> {
   bool isSecurePassword = true;
-  String localhost = 'http://192.168.53.163:3000';
+  String localhost = 'http://192.168.115.163:3000';
   String render = 'https://ourchatserver.onrender.com';
   String cyclic = '<Cyclic Link>';
   String system = '<System Link>';

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,6 +5,7 @@ import 'package:notepad/Models/user_model.dart';
 import 'package:notepad/Providers/user_provider.dart';
 import 'package:notepad/Screens/ChatApp/TabBarScreens/StatusWidgets/my_status.dart';
 import 'package:notepad/Screens/ChatApp/TabBarScreens/StatusWidgets/recent_status.dart';
+import 'package:notepad/Services/AuthServices/auth_services.dart';
 import 'package:notepad/Services/message_services.dart';
 import 'package:notepad/Services/user_services.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +22,16 @@ class StatusScreen extends StatefulWidget {
 class _StatusScreenState extends State<StatusScreen> {
   MessageServices messageServices = MessageServices();
   UserService userService = UserService();
-  List<User> users = [];
-  List<User> filteredUsers = [];
+  AuthService authService = AuthService();
+  late List<User> users = [];
+  late List<User> filteredUsers = [];
+  late User user;
 
   Future<void> _handleRefresh() async {
     fetchAllUsers();
-    setState(() {});
+    setState(() {
+      authService.getUserData(context);
+    });
   }
 
   fetchAllUsers() async {
@@ -37,6 +41,7 @@ class _StatusScreenState extends State<StatusScreen> {
 
   @override
   void initState() {
+    authService.getUserData(context);
     fetchAllUsers();
     super.initState();
   }
@@ -48,7 +53,7 @@ class _StatusScreenState extends State<StatusScreen> {
             user.status.length != 0 &&
             user.id != Provider.of<UserProvider>(context).user.id)
         .toList();
-    final user = Provider.of<UserProvider>(context).user;
+    user = Provider.of<UserProvider>(context).user;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -63,7 +68,7 @@ class _StatusScreenState extends State<StatusScreen> {
               alignment: Alignment.centerLeft,
               height: 30,
               width: mq.width,
-              color: Colors.grey[300],
+              color: isLightTheme(context) ? Colors.grey[300] : Colors.grey[900],
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
                 "Recent Updates",
@@ -75,11 +80,9 @@ class _StatusScreenState extends State<StatusScreen> {
               child: ListView.builder(
                   itemCount: filteredUsers.length,
                   itemBuilder: (context, index) {
-                    sortStatus() {
                       int max = filteredUsers[index].status.length - 1;
                       filteredUsers
                           .sort((b,a) => a.status[max]['time'].compareTo(b.status[max]['time']));
-                    }
                     return RecentStatus(
                       user: filteredUsers[index],
                     );
@@ -97,7 +100,7 @@ class _StatusScreenState extends State<StatusScreen> {
             onTap: () async {
               uploadImageGallery(user);
             },
-            labelWidget: Text("Upload Image from Gallery   "),
+            labelWidget: Text("Upload Image from Gallery   ", style: TextStyle(color: Colors.black54),),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: isLightTheme(context)
@@ -112,7 +115,7 @@ class _StatusScreenState extends State<StatusScreen> {
             onTap: () async {
               uploadImageCamera(user);
             },
-            labelWidget: Text("Upload Image from Camera   "),
+            labelWidget: Text("Upload Image from Camera   ", style: TextStyle(color: Colors.black54)),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: isLightTheme(context)
@@ -127,7 +130,7 @@ class _StatusScreenState extends State<StatusScreen> {
             onTap: () async {
               uploadVideoGallery(user);
             },
-            labelWidget: Text("Upload Video from Gallery   "),
+            labelWidget: Text("Upload Video from Gallery   ", style: TextStyle(color: Colors.black54)),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: isLightTheme(context)
@@ -142,7 +145,7 @@ class _StatusScreenState extends State<StatusScreen> {
             onTap: () async {
               uploadVideoCamera(user);
             },
-            labelWidget: Text("Upload Video from Camera   "),
+            labelWidget: Text("Upload Video from Camera   ", style: TextStyle(color: Colors.black54)),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             backgroundColor: isLightTheme(context)
@@ -166,7 +169,7 @@ class _StatusScreenState extends State<StatusScreen> {
           context: context,
           time: DateTime.now().millisecondsSinceEpoch.toString(),
           user: user,
-          image: video, type: 'video');
+          image: video, type: 'video', onSuccess: () { authService.getUserData(context); });
     }
   }
 
@@ -178,7 +181,7 @@ class _StatusScreenState extends State<StatusScreen> {
           context: context,
           time: DateTime.now().millisecondsSinceEpoch.toString(),
           user: user,
-          image: video, type: 'video');
+          image: video, type: 'video', onSuccess: () { authService.getUserData(context); });
     }
   }
 
@@ -190,7 +193,7 @@ class _StatusScreenState extends State<StatusScreen> {
           context: context,
           time: DateTime.now().millisecondsSinceEpoch.toString(),
           user: user,
-          image: image, type: 'image');
+          image: image, type: 'image', onSuccess: () { authService.getUserData(context); });
     }
   }
 
@@ -202,7 +205,7 @@ class _StatusScreenState extends State<StatusScreen> {
           context: context,
           time: DateTime.now().millisecondsSinceEpoch.toString(),
           user: user,
-          image: image, type: 'image');
+          image: image, type: 'image', onSuccess: () { authService.getUserData(context); });
     }
   }
 }

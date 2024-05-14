@@ -1,19 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:notepad/Providers/user_provider.dart';
+import 'package:notepad/Screens/ChatApp/chatting_screen.dart';
+import 'package:notepad/Services/user_services.dart';
+import 'package:provider/provider.dart';
 import '../../../../Models/user_model.dart';
 import '../../../../Widgets/no_last_custom_card.dart';
 
 class ChatAdd extends StatefulWidget {
-  final List<User> users;
 
-  const ChatAdd({super.key, required this.users});
+  const ChatAdd({super.key});
 
   @override
   State<ChatAdd> createState() => _ChatAddState();
 }
 
 class _ChatAddState extends State<ChatAdd> {
+
+  UserService userService = UserService();
+  late List<User> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  fetchUsers() async {
+    users = await userService.fetchAllUsers(context);
+    setState(() {
+
+    });
+  }
+
   void sortUsers() {
-    widget.users.sort((b,a) => a.last_active.compareTo(b.last_active));
+    users.sort((b,a) => a.last_active.compareTo(b.last_active));
   }
 
   @override
@@ -34,10 +54,12 @@ class _ChatAddState extends State<ChatAdd> {
       ),
       body: Expanded(
         child: ListView.builder(
-            itemCount: widget.users.length,
+            itemCount: users.length,
             itemBuilder: (context, index) {
               sortUsers();
-              return NoLastCustomCard(user: widget.users[index]);
+              return NoLastCustomCard(user: users[index], onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_)=>ChattingScreen(user: Provider.of<UserProvider>(context).user, chatUser: users[index],)));
+              },);
             }),
       ),
     );

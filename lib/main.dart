@@ -30,9 +30,9 @@ Future<void> main() async {
   _initializeFirebase();
   cameras = await availableCameras();
 
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => UserProvider())
-  ],child: const MyApp()));
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
+      child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -42,9 +42,9 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-
 class _MyAppState extends State<MyApp> {
   final AuthService authService = AuthService();
+
   @override
   void initState() {
     authService.getUserData(context);
@@ -54,7 +54,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<UserProvider>(context).user.token.isNotEmpty ? haveToken = true : haveToken = false;
+    Provider.of<UserProvider>(context).user.token.isNotEmpty
+        ? haveToken = true
+        : haveToken = false;
     return OverlaySupport(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -69,11 +71,18 @@ class _MyAppState extends State<MyApp> {
 
 @pragma('vm:entry-point')
 _initializeFirebase() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   var result = await FlutterNotificationChannel().registerNotificationChannel(
     description: 'For showing Pop up Notification',
     id: 'chats',
     importance: NotificationImportance.IMPORTANCE_HIGH,
     name: 'Chats',
   );
+  await FlutterNotificationChannel().registerNotificationChannel(
+      id: 'calls',
+      name: 'Calls',
+      description: 'For Sending call notifications',
+      importance: NotificationImportance.IMPORTANCE_HIGH);
 }

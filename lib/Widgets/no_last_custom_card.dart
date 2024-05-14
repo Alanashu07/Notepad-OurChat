@@ -16,15 +16,14 @@ import '../main.dart';
 
 class NoLastCustomCard extends StatelessWidget {
   final User user;
-  const NoLastCustomCard({super.key, required this.user});
+  final VoidCallback onTap;
+  const NoLastCustomCard({super.key, required this.user, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final appUser = Provider.of<UserProvider>(context).user;
     return InkWell(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ChattingScreen(chatUser: user, user: appUser,)));
-      },
+      onTap: onTap,
       child: Column(
         children: [
           ListTile(

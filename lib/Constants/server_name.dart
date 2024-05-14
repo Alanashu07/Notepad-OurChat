@@ -8,5 +8,5 @@ class ServerName {
 
   static Future setServerName(String server) async => await _prefs!.setString(_keyServerName, server);
 
-  static String getServerName() => _prefs!.getString(_keyServerName) ?? 'http://192.168.53.163:3000';
+  static String getServerName() => _prefs!.getString(_keyServerName) ?? 'http://192.168.115.163:3000';
 }

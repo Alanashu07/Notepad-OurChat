@@ -4,6 +4,7 @@ import 'package:notepad/Providers/user_provider.dart';
 import 'package:notepad/Screens/ChatApp/TabBarScreens/status_view_screen.dart';
 import 'package:notepad/Services/message_services.dart';
 import 'package:notepad/Widgets/status_painter.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import '../../../../Models/user_model.dart';
 import '../../../../Styles/app_style.dart';
@@ -30,7 +31,7 @@ class _RecentStatusState extends State<RecentStatus> {
     return InkWell(
       onTap: (){
         messageServices.viewStatus(context: context, user: user, statusUser: widget.user, num: 0);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> StatusViewScreen(url: url.toString(), user: widget.user)));
+        Navigator.push(context, PageTransition(child: StatusViewScreen(url: url.toString(), user: widget.user), type: PageTransitionType.fade));
       },
       child: ListTile(
         leading: CustomPaint(
@@ -39,8 +40,8 @@ class _RecentStatusState extends State<RecentStatus> {
             radius: 27,
             backgroundImage: NetworkImage(url.toString()), backgroundColor: Colors.white,),
         ),
-        title: Text(widget.user.name, style: TextStyle(fontWeight: FontWeight.bold),),
-        subtitle: Text(DateUtil.getMessageTime(context: context, time: time), style: TextStyle(fontSize: 12),),
+        title: Text(widget.user.name, style: TextStyle(fontWeight: FontWeight.bold, color: isLightTheme(context) ? Colors.black : Colors.white),),
+        subtitle: Text(DateUtil.getMessageTime(context: context, time: time), style: TextStyle(fontSize: 12, color: isLightTheme(context) ? Colors.black54 : Colors.white60),),
       ),
     );
   }

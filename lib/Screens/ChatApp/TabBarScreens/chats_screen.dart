@@ -157,7 +157,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (_) => ChatAdd(users: users)));
+              MaterialPageRoute(builder: (_) => ChatAdd()));
         },
         child: Icon(Icons.chat),
       ),

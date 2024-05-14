@@ -318,6 +318,7 @@ class MessageServices {
       {required BuildContext context,
       required String time,
         required String type,
+        required VoidCallback onSuccess,
       required User user,
       required XFile image}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -344,6 +345,7 @@ class MessageServices {
                 .copyWith(status: jsonDecode(response.body)['status']);
             userProvider.setUserFromModel(user);
             showSnackBar(context, "Status Uploaded Successfully");
+            onSuccess();
           });
     } catch (e) {
       showSnackBar(context, e.toString());
@@ -356,19 +358,36 @@ class MessageServices {
       required User statusUser,
       required int num}) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if(user.id != statusUser.id) {
+      try {
+        http.Response res = await http.post(Uri.parse('$uri/api/viewStatus'),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+              'x-auth-token': userProvider.user.token
+            },
+            body: jsonEncode({
+              'id': statusUser.id,
+              'clickedUserId': user.id,
+              'statusIndex': num
+            }));
+        httpErrorHandle(response: res, context: context, onSuccess: () {});
+      } catch (e) {
+        showSnackBar(context, e.toString());
+      }
+    }
+  }
+  
+  void deleteStatus({required String statusId, required String userId, required BuildContext context, required VoidCallback onSuccess}) async{
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     try {
-      http.Response res = await http.post(Uri.parse('$uri/api/viewStatus'),
+      http.Response res = await http.delete(Uri.parse('$uri/api/deleteStatus?id=$statusId&userId=$userId'),
           headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
+            'Content-Type': 'aplication/json; charset=UTF-8',
             'x-auth-token': userProvider.user.token
-          },
-          body: jsonEncode({
-            'id': statusUser.id,
-            'clickedUserId': user.id,
-            'statusIndex': num
-          }));
-      httpErrorHandle(response: res, context: context, onSuccess: () {});
-    } catch (e) {
+          }
+      );
+      httpErrorHandle(response: res, context: context, onSuccess: onSuccess);
+    } catch(e) {
       showSnackBar(context, e.toString());
     }
   }
